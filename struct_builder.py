@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
 from collections import deque, defaultdict, namedtuple 
-
+import os 
 def average_color(filename):
     pic_array = np.asarray(Image.open(filename))
     # for each of R, G, and B, get the average value across all pixels
@@ -11,15 +11,17 @@ def average_color(filename):
 def deque_factory():
     return lambda: deque([])
 
-def color_to_bucket(file_list):
+def color_to_bucket(dir_name):
+    
     color_buckets = defaultdict(deque_factory())
-    for filename in file_list:
-        im_color = average_color(filename)
+    for filename in os.listdir(dir_name):
+        filepath = os.path.join(dir_name, filename)
+        im_color = average_color(filepath)
         reduced_arr = np.floor(im_color/25.6).astype('int')
         string_arr = reduced_arr.astype('str')
         #this is really unforgivable, but the numpy join is weird
         string_key = string_arr[0]+string_arr[1]+string_arr[2]
-        color_buckets[string_key].append(filename)
+        color_buckets[string_key].append(filepath)
 
     return color_buckets
 

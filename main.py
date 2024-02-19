@@ -5,12 +5,15 @@ import os
 from struct_builder import * 
 class MosaicMaker:
     def __init__(self, file_dir_name):
-        self.bucket_dict = color_to_bucket(os.listdir(file_dir_name))
+        self.bucket_dict = color_to_bucket(file_dir_name)
         self.colorspace_map = label_colorspace(list(self.bucket_dict.keys()))
+
+        
 
     # blocksize is side length of the square patches we'll be pulling from the big picture
     # also called the "kernel" in typical convolution models
     def make_image(self, big_picture_file, blocksize):
+        
         with Image.open(big_picture_file) as img:
             #get the x and y dims of the picture in terms of patches
             xdim = np.floor(img.width/blocksize).astype('int')
@@ -41,8 +44,6 @@ class MosaicMaker:
 
             new_mosaic.show()
 
-def mos_test():
-    test_maker = MosaicMaker("./assets")
-    test_maker.make_image("monalisa.jpeg", 20)
 
-mos_test()
+test_maker = MosaicMaker("./assets/")
+test_maker.make_image("monalisa.jpeg", 20)
